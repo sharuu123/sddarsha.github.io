@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AWS Javascript Browser SDK: Login With Amazon</title>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc12.min.js"></script>
+</head>
+<body>
+<div id="amazon-root"></div>
+ <a href id="LoginWithAmazon">
+    <img border="0" alt="Login with Amazon"
+        src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+        width="156" height="32" />
+  
+ </a>
+<script type="text/javascript">
+
+    // Login with Amazon
+    window.onAmazonLoginReady = function() {
+        amazon.Login.setClientId('amzn1.application-oa2-client.11ccb03bc056429d94f747df0b79cbb4');
+    };
+    (function(d) {
+        var a = d.createElement('script'); a.type = 'text/javascript';
+        a.async = true; a.id = 'amazon-login-sdk';
+        a.src = 'https://assets.loginwithamazon.com/sdk/na/login1.js';
+        d.getElementById('amazon-root').appendChild(a);
+    })(document);
+
+    function amazonAuth(response) {
+        if (response.error) {
+            console.log(response.error);
+            return;
+        }
+        amazon.Login.retrieveProfile(response.access_token, function(response) {
+            alert("Logged in");
+            console.log(response);
+            console.log(response.profile.CustomerId);
+
+            console.log(response.profile.PrimaryEmail);
+
+            var result = response.profile.CustomerId + "|" + response.profile.PrimaryEmail;
+            console.log(result);
+
+            var hashedRequest = hashCode(result);
+            document.cookie = result;
+
+            console.log(response);
+        });
+    }
+
+    function hashCode (str){
+        var hash = 0;
+        if (str.length == 0) return hash;
+        for (i = 0; i < str.length; i++) {
+            char = str.charCodeAt(i);
+            hash = ((hash<<5)-hash)+char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    }
+
+    document.getElementById('LoginWithAmazon').onclick = function() {
+        options = { scope : 'profile' };
+        amazon.Login.authorize(options, amazonAuth);
+    };
+</script>
+</body>
