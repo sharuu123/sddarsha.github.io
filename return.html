@@ -1,0 +1,69 @@
+<DOCTYPE! html>
+<html>
+<head><title>BP POC</title></head>
+<body>  
+  
+  <div id="amazon-root"></div>
+ <script type="text/javascript">
+
+    window.onAmazonLoginReady = function() {
+      amazon.Login.setClientId('amzn1.application-oa2-client.11ccb03bc056429d94f747df0b79cbb4');
+    };
+    (function(d) {
+      var a = d.createElement('script'); a.type = 'text/javascript';
+      a.async = true; a.id = 'amazon-login-sdk';
+      a.src = 'https://assets.loginwithamazon.com/sdk/na/login1.js';
+      d.getElementById('amazon-root').appendChild(a);
+    })(document);
+
+</script>
+  <br>
+    <br>
+    <br>
+    <br>
+  
+ <a href id="LoginWithAmazon">
+    <img border="0" alt="Login with Amazon"
+        src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_156x32.png"
+        width="156" height="32" />
+  
+ </a>
+  
+<script type="text/javascript">
+/*document.getElementById('LoginWithAmazon').onclick = function() {
+loginOptions = {scope: "profile postal_code payments:widget payments:shipping_address", popup: true};
+amazon.Login.authorize(loginOptions,  function(authResp) {
+  if ( authResp.error ) {
+    alert('oauth error ' + authResp.error);
+    return;
+  }
+  else {
+    console.dir('access_token= ' + authResp.access_token);
+    amazon.Login.retrieveProfile(function (profileResp) {
+      console.dir('CustomerId= ' + profileResp.profile.CustomerId);
+      console.dir('Name= ' + profileResp.profile.Name);
+      console.dir('PostalCode= ' + profileResp.profile.PostalCode);
+      console.dir('PrimaryEmail= ' + profileResp.profile.PrimaryEmail);
+    });
+  }
+});
+};*/
+  
+ document.getElementById('LoginWithAmazon').onclick = function() {
+    var url = window.location;
+    var access_token = new URL(url).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];  
+    alert("XXXx  retrieving profile with " + access_token) 
+
+       amazon.Login.retrieveProfile(access_token, function(response) {
+             alert('Hello, ' + response.profile.Name);
+             alert('Your e-mail address is ' + response.profile.PrimaryEmail);
+             alert('Your unique ID is ' + response.profile.CustomerId);
+             if ( window.console && window.console.log )
+                window.console.log(response);
+         });
+  
+    };
+</script>
+
+</body>
+</html>
